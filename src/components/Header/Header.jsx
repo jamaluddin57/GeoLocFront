@@ -15,7 +15,7 @@ const Header = () => {
   const adminRoutes = [
     { path: "/", label: "Dashboard" },
     { path: "/filter", label: "Filter Data" },
-    { path: "/map", label: "Map" },
+    // { path: "/map", label: "Map" },
     { path: "/user-management", label: "User Management" },
     { path: "/import", label: "Import Data" },
     { path: "/geocode", label: "Geocode Management" },
