@@ -103,7 +103,6 @@ const FilterPage = () => {
                 onFilterSubmit={handleFilterSubmit}
                 onFormChange={(criteria) => setFilterCriteria(criteria)}
                 geoEnabled={!!geoJson}
-                onClearFilters={handleClearFilters}
             />
 
             <div className="flex-grow w-full h-[600px] shadow-lg border rounded-lg overflow-hidden">
@@ -111,6 +110,7 @@ const FilterPage = () => {
                     onDrawGeoJson={(geoData) => setGeoJson(geoData)}
                     canDraw={!geoJson}
                     markers={markers} // Pass markers to the map
+                    clearFilters={handleClearFilters}
                 />
             </div>
 

@@ -6,6 +6,7 @@ const FilterForm = ({ onFilterSubmit, onFormChange, geoEnabled, onClearFilters }
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleFormChange = () => {
         onFormChange({ zip_code: zipCode, city, state, phone_number: phoneNumber });
@@ -17,6 +18,12 @@ const FilterForm = ({ onFilterSubmit, onFormChange, geoEnabled, onClearFilters }
         setState('');
         setPhoneNumber('');
         onClearFilters();
+    };
+
+    const handleSubmit = async () => {
+        setLoading(true);
+        await onFilterSubmit();
+        setLoading(false);
     };
 
     return (
@@ -81,18 +88,18 @@ const FilterForm = ({ onFilterSubmit, onFormChange, geoEnabled, onClearFilters }
                 <div className="flex space-x-2">
                     <button
                         type="button"
-                        onClick={handleClear}
-                        className="w-1/2 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                        onClick={handleSubmit}
+                        className={`w-1/2 py-2 rounded-lg text-white flex justify-center items-center ${(!zipCode && !city && !state && !phoneNumber && !geoEnabled) || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
+                        disabled={(!zipCode && !city && !state && !phoneNumber && !geoEnabled) || loading}
                     >
-                        Clear Filters
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onFilterSubmit}
-                        className={`w-1/2 py-2 rounded-lg text-white ${!zipCode && !city && !state && !phoneNumber && !geoEnabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-                        disabled={!zipCode && !city && !state && !phoneNumber && !geoEnabled}
-                    >
-                        Apply Filter
+                        {loading ? (
+                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        ) : (
+                            'Apply Filter'
+                        )}
                     </button>
                 </div>
             </form>
