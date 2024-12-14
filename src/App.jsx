@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Dashboard from './pages/Dashboard';
 import FilterPage from './pages/FilterPage';
@@ -20,15 +20,13 @@ function App() {
           <div className="flex flex-grow">
             <main className="flex-grow p-4">
               <Routes>
-              <Route path="/" element={<ProtectedRoute>
-                <Dashboard />
-                </ProtectedRoute>} /> 
+                <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/login" element={<Login />} />
                 <Route
                   path="/filter"
                   element={
                     <ProtectedRoute>
-                      <FilterPage/>
+                      <FilterPage />
                     </ProtectedRoute>
                   }
                 />
@@ -41,7 +39,7 @@ function App() {
                   }
                 />
                 <Route path="/map" element={<ProtectedRoute><MapPage /></ProtectedRoute>} />
-                <Route path="/import" element={<ProtectedRoute><ImportDataPage /></ProtectedRoute>} /> 
+                <Route path="/import" element={<ProtectedRoute><ImportDataPage /></ProtectedRoute>} />
                 <Route path="/geocode" element={<ProtectedRoute><GeocodePage /></ProtectedRoute>} />
               </Routes>
             </main>
