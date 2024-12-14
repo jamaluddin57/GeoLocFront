@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-
+import { motion } from 'framer-motion';
 const Map = ({ markers, onDrawGeoJson, canDraw, clearFilters }) => {
     const mapRef = useRef();
     const featureGroupRef = useRef();
@@ -38,6 +38,7 @@ const Map = ({ markers, onDrawGeoJson, canDraw, clearFilters }) => {
         // Reset FeatureGroup (drawn layers)
         setFeatureGroupKey(Date.now());
     };
+
 
     return (
         <div className="relative flex-grow w-full h-[600px] shadow-lg border rounded-lg overflow-hidden">
@@ -78,16 +79,18 @@ const Map = ({ markers, onDrawGeoJson, canDraw, clearFilters }) => {
                     ))}
                 </MarkerClusterGroup>
             </MapContainer>
-            <button
+            <motion.button
                 onClick={() => {
                     clearDrawnLayers();
                     clearFilters();
                 }}
                 className="absolute bottom-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
                 style={{ zIndex: 1000 }}
+                whileHover={{ scale: 1.1, backgroundColor: '#2563EB' }}
+                whileTap={{ scale: 0.9 }}
             >
                 Clear Filters
-            </button>
+            </motion.button>
         </div>
     );
 };

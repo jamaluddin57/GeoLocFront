@@ -94,7 +94,7 @@ const FilterPage = () => {
 
     return (
         <motion.div
-            className="relative flex flex-col md:flex-row items-start justify-between p-6 gap-6 mt-24"
+            className="relative flex flex-col md:flex-row items-start justify-between p-6 gap-6 mt-24 w-full mb-24"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -104,8 +104,7 @@ const FilterPage = () => {
                 onFormChange={(criteria) => setFilterCriteria(criteria)}
                 geoEnabled={!!geoJson}
             />
-
-            <div className="flex-grow w-full h-[600px] shadow-lg border rounded-lg overflow-hidden">
+            <div className="flex-grow w-full h-[600px] shadow-lg border rounded-lg overflow-hidden mb-24">
                 <Map
                     onDrawGeoJson={(geoData) => setGeoJson(geoData)}
                     canDraw={!geoJson}
@@ -114,7 +113,7 @@ const FilterPage = () => {
                 />
             </div>
 
-            <div className="flex justify-between items-center mt-4 w-full">
+            <div className="flex justify-between items-center mt-4 w-full absolute bottom-0 left-0 p-6">
                 {totalRecords > 0 && (
                     <div className="text-gray-600">
                         Total Records: {totalRecords}

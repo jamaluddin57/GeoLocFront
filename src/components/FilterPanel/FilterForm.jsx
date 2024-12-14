@@ -28,7 +28,7 @@ const FilterForm = ({ onFilterSubmit, onFormChange, geoEnabled, onClearFilters }
 
     return (
         <motion.div
-            className="bg-white shadow-md rounded-lg p-6 w-full md:w-1/3"
+            className="bg-white shadow-md rounded-lg p-6 w-full md:w-1/2 lg:w-1/3 md:h-[600px]"
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
