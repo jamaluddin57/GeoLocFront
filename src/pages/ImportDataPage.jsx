@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUploadCsvMutation,useTriggerGeocodeUpdateMutation } from '../features/api/apiSlice';
+import { useUploadCsvMutation, useTriggerGeocodeUpdateMutation } from '../features/api/apiSlice';
 import CsvImport from '../components/CsvImport';
 import ErrorModal from '../components/ErrorModal';
 import { useSelector } from 'react-redux';
@@ -9,15 +9,17 @@ const ImportData = () => {
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.auth); // Get user details from Redux
     const [uploadCsv, { isLoading: isUploading, isSuccess, error: uploadError }] = useUploadCsvMutation();
+    const [triggerGeocodeUpdate] = useTriggerGeocodeUpdateMutation();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [modalTitle, setModalTitle] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [progress, setProgress] = useState(0); // Progress bar value
+    const [estimatedTime, setEstimatedTime] = useState(0); // Estimated upload time in seconds
 
     // Redirect non-admin users
     useEffect(() => {
-        if (!currentUser?.permissions?.includes('admin')) {
+        if (!currentUser?.permissions?.includes('admin')&&!currentUser?.permissions?.includes('import')) {
             navigate('/'); // Redirect non-admin users to the home/login page
         }
     }, [currentUser, navigate]);
@@ -30,7 +32,7 @@ const ImportData = () => {
             interval = setInterval(() => {
                 setProgress((prev) => {
                     if (prev >= 100) return 100;
-                    return prev + 1.67; // Increment by 1.67 to complete in ~60 seconds
+                    return prev + (100 / estimatedTime); // Increment based on estimated time
                 });
             }, 1000); // Update every second
         } else {
@@ -38,11 +40,15 @@ const ImportData = () => {
         }
 
         return () => clearInterval(interval); // Clear interval on unmount or upload completion
-    }, [isUploading]);
+    }, [isUploading, estimatedTime]);
 
     // Handle file selection
     const handleFileSelect = (file) => {
         setSelectedFile(file);
+        const fileSizeInMB = file.size / (1024 * 1024); // Convert file size to MB
+        const uploadSpeedInMBps = 1; // Assume an upload speed of 1 MBps for estimation
+        const estimatedTimeInSeconds = fileSizeInMB / uploadSpeedInMBps;
+        setEstimatedTime(estimatedTimeInSeconds);
     };
 
     // Handle save action
@@ -62,6 +68,7 @@ const ImportData = () => {
             setModalTitle('Success');
             setIsModalOpen(true);
             setSelectedFile(null);
+            await triggerGeocodeUpdate(); // Trigger geocoding update
         } catch (err) {
             setModalMessage('Failed to upload CSV file. Please try again.');
             setIsModalOpen(true);

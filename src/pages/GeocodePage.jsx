@@ -110,7 +110,7 @@ const GeocodePage = () => {
                     >
                         Refresh Task List
                     </button>
-                    {currentTasks && currentTasks.active_tasks.length > 0 ? (
+                    {currentTasks && currentTasks.active_tasks?.length > 0 ? (
                         <ul className="space-y-2 mt-4">
                             {currentTasks.active_tasks.map((task) => (
                                 <li
@@ -123,7 +123,7 @@ const GeocodePage = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p className="text-gray-500 mt-4">No ongoing tasks found at the moment.</p>
+                        <p className="text-gray-500 mt-4">No Active geocoding task</p>
                     )}
                 </motion.div>
             </div>
