@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children, requiredPermission }) => {
     const verifyToken = async () => {
       try {
         // Make the API call to verify the token
-        const response = await axios.post("https://159.65.82.164/api/v1/auth/verify-token",
+        const response = await axios.post("http://159.65.82.164/api/v1/auth/verify-token",
           {},
           {
             headers: {
