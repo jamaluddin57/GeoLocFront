@@ -13,7 +13,7 @@ const useGetContacts = () => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await axios.get("http://159.65.82.164/api/v1/contacts", {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/contacts`, {
           headers: {
             Accept: 'text/csv', // Expect CSV response
             Authorization: `Bearer ${token}`, // Include token in headers

@@ -3,7 +3,7 @@ const Base_URL=import.meta.env.VITE_API_URL;
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://159.65.82.164/api/v1",
+    baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {
