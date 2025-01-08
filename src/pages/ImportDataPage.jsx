@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useUploadCsvMutation, useTriggerGeocodeUpdateMutation } from '../features/api/apiSlice';
 import CsvImport from '../components/CsvImport';
 import ErrorModal from '../components/ErrorModal';
+import GeocodeModal from '../components/GeocodeModal'; // Separate modal component
 import { useSelector } from 'react-redux';
 
 const ImportData = () => {
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.auth); // Get user details from Redux
-    const [uploadCsv, { isLoading: isUploading, isSuccess, error: uploadError }] = useUploadCsvMutation();
+    const [uploadCsv, { isLoading: isUploading, error: uploadError }] = useUploadCsvMutation();
     const [triggerGeocodeUpdate] = useTriggerGeocodeUpdateMutation();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isGeocodeModalOpen, setIsGeocodeModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [modalTitle, setModalTitle] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
@@ -19,7 +21,7 @@ const ImportData = () => {
 
     // Redirect non-admin users
     useEffect(() => {
-        if (!currentUser?.permissions?.includes('admin')&&!currentUser?.permissions?.includes('import')) {
+        if (!currentUser?.permissions?.includes('admin') && !currentUser?.permissions?.includes('import')) {
             navigate('/'); // Redirect non-admin users to the home/login page
         }
     }, [currentUser, navigate]);
@@ -55,6 +57,7 @@ const ImportData = () => {
     const handleSave = async () => {
         if (!selectedFile) {
             setModalMessage('Please select a CSV file to upload.');
+            setModalTitle('Error');
             setIsModalOpen(true);
             return;
         }
@@ -64,21 +67,41 @@ const ImportData = () => {
 
         try {
             const response = await uploadCsv(formData).unwrap(); // Capture API response
-            setModalMessage(`New Records Imported: ${response.contacts_imported}`);
+            setModalMessage(`New Records Imported: ${response.contacts_imported}\nTotal Records: ${response.total_rows}\nInvalid Rows: ${response.skipped_rows}\nDuplicate Rows (File): ${response.duplicate_file}\nAlready existing: ${response.duplicate_db}`);
             setModalTitle('Success');
             setIsModalOpen(true);
-            setSelectedFile(null);
-            await triggerGeocodeUpdate(); // Trigger geocoding update
         } catch (err) {
             setModalMessage('Failed to upload CSV file. Please try again.');
+            setModalTitle('Error');
             setIsModalOpen(true);
         }
     };
 
+    // Handle geocoding confirmation
+    const handleGeocodeConfirm = async () => {
+        try {
+            await triggerGeocodeUpdate(selectedFile.name); // Trigger geocoding update with filename
+            setModalMessage('Geocoding process started successfully.');
+            setModalTitle('Geocoding');
+        } catch (err) {
+            setModalMessage('Failed to start geocoding. Please try again.');
+            setModalTitle('Error');
+        } finally {
+            setIsModalOpen(true);
+            setIsGeocodeModalOpen(false);
+        }
+    };
+
+    // Handle geocoding cancellation
+    const handleGeocodeCancel = () => {
+        setIsGeocodeModalOpen(false);
+    };
+
     const closeModal = () => {
         setIsModalOpen(false);
-        setModalMessage('');
-        setModalTitle('');
+        if (modalTitle === 'Success') {
+            setIsGeocodeModalOpen(true); // Open geocode modal after success modal is closed
+        }
     };
 
     return (
@@ -104,7 +127,18 @@ const ImportData = () => {
             )}
             {uploadError && <p className="mt-4 text-red-600">Error uploading file. Please try again.</p>}
 
-            <ErrorModal title={modalTitle} isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
+            <ErrorModal
+                title={modalTitle}
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                message={modalMessage}
+            />
+
+            <GeocodeModal
+                isOpen={isGeocodeModalOpen}
+                onConfirm={handleGeocodeConfirm}
+                onCancel={handleGeocodeCancel}
+            />
         </div>
     );
 };

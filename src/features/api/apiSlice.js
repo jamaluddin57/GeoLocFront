@@ -117,8 +117,8 @@ export const apiSlice = createApi({
       }),
     }),    
     triggerGeocodeUpdate: builder.mutation({
-      query: () => ({
-        url: '/trigger-geocode-update/',
+      query: (fileName) => ({
+        url: `/trigger-geocode-update/?file_name=${fileName}`,
         method: 'POST',
       }),
     }),

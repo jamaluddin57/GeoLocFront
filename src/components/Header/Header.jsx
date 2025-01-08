@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearAuthData } from '../../features/auth/authSlice'; // Adjust the path based on your project structure
 
 const Header = () => {
+  const dispatch = useDispatch();
   const { permissions } = useSelector((state) => state.auth);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  if (!permissions) {
+  if (!permissions||permissions.length === 0) {
     return null; // Show nothing if permissions are not available
   }
 
@@ -15,7 +17,6 @@ const Header = () => {
   const adminRoutes = [
     { path: "/", label: "Dashboard" },
     { path: "/filter", label: "Filter Data" },
-    // { path: "/map", label: "Map" },
     { path: "/user-management", label: "User Management" },
     { path: "/import", label: "Import Data" },
     { path: "/geocode", label: "Geocode Management" },
@@ -43,6 +44,11 @@ const Header = () => {
     routes = importRoutes;
   }
 
+  // Handle sign-out
+  const handleSignOut = () => {
+    dispatch(clearAuthData());
+  };
+
   return (
     <motion.header
       className="bg-white shadow-md fixed w-full z-10"
@@ -57,7 +63,7 @@ const Header = () => {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex space-x-6 text-[18px]">
+        <nav className="hidden md:flex space-x-6 text-[18px] items-center">
           {routes.map((route) => (
             <Link
               key={route.path}
@@ -67,6 +73,12 @@ const Header = () => {
               {route.label}
             </Link>
           ))}
+          <button
+            onClick={handleSignOut}
+            className="bg-red-500 text-white px-4 py-2 rounded ml-4 hover:bg-red-600 transition duration-300"
+          >
+            Sign Out
+          </button>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -112,6 +124,12 @@ const Header = () => {
                 {route.label}
               </Link>
             ))}
+            <button
+              onClick={handleSignOut}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+            >
+              Sign Out
+            </button>
           </nav>
         </motion.div>
       )}

@@ -28,7 +28,8 @@ const ErrorModal = ({ isOpen, onClose, message, title }) => {
                 variants={modalVariants}
             >
                 <h2 className="text-lg font-bold text-red-500">{title?title:Error}</h2>
-                <p className="text-gray-700 mt-2">{message}</p>
+                {/* <p className="text-gray-700 mt-2">{message}</p> */}
+                {message.split('\n').map(str => <p className="text-gray-700 mt-2">{str}</p>)}
                 <button
                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     onClick={onClose}

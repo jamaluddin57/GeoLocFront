@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios'; // Ensure axios is installed: npm install axios
-
+import { useDispatch } from 'react-redux';
+import { clearAuthData } from '../features/auth/authSlice';
 const ProtectedRoute = ({ children, requiredPermission }) => {
   const { token, permissions } = useSelector((state) => state.auth); // Get token and permissions from Redux store
   const [isVerified, setIsVerified] = useState(null); // Tracks token verification status
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -41,7 +42,7 @@ const ProtectedRoute = ({ children, requiredPermission }) => {
   }
 
   if (!isVerified) {
-    // Redirect to login if token is invalid or not verified
+    dispatch(clearAuthData()); // Clear invalid token from Redux store
     return <Navigate to="/login" replace />;
   }
 

@@ -9,7 +9,8 @@ const FilterForm = ({ onFilterSubmit, onFormChange, geoEnabled, onClearFilters }
     const [loading, setLoading] = useState(false);
 
     const handleFormChange = () => {
-        onFormChange({ zip_code: zipCode, city, state, phone_number: phoneNumber });
+        const zipCodesArray = zipCode.split(',').map(zip => zip.trim());
+        onFormChange({ zip_code: zipCodesArray, city, state, phone_number: phoneNumber });
     };
 
     const handleClear = () => {
@@ -43,7 +44,7 @@ const FilterForm = ({ onFilterSubmit, onFormChange, geoEnabled, onClearFilters }
                         onChange={(e) => setZipCode(e.target.value)}
                         onBlur={handleFormChange}
                         className="w-full p-2 border rounded"
-                        placeholder="Enter ZIP code"
+                        placeholder="Enter ZIP codes, separated by commas"
                     />
                 </div>
                 <div>
