@@ -34,7 +34,7 @@ const GeocodePage = () => {
                     Use this page to start a geocoding process, check the progress of your tasks, or view all ongoing tasks.
                 </p>
 
-                {/* Trigger Geocoding Section */}
+                {/* Trigger Geocoding Section
                 <motion.div
                     className="space-y-4"
                     initial={{ opacity: 0 }}
@@ -52,7 +52,7 @@ const GeocodePage = () => {
                     >
                         {isTriggering ? 'Starting Geocoding...' : 'Start Geocoding'}
                     </button>
-                </motion.div>
+                </motion.div> */}
 
                 {/* Check Task Status Section */}
                 <motion.div
