@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useGetMetricsQuery } from '../features/api/apiSlice'; // Adjust the import path based on your project structure
 
 const Dashboard = () => {
-  const { data: metrics, isLoading, isError } = useGetMetricsQuery();
+  const { data: metrics, isLoading, isError, refetch } = useGetMetricsQuery();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const containerVariants = {
     hidden: { opacity: 0, x: '-100vw' },
@@ -79,6 +83,13 @@ const Dashboard = () => {
         >
           <h2 className="text-xl font-semibold mb-2">Total Users</h2>
           <p className="text-gray-600">{metrics.userCount} users</p>
+        </motion.div>
+        <motion.div
+          className="bg-white h-40 p-10 shadow-md rounded-lg hover:shadow-xl transition-shadow duration-300"
+          whileHover={{ scale: 1.05 }}
+        >
+          <h2 className="text-xl font-semibold mb-2">Geocoded Data Count</h2>
+          <p className="text-gray-600">{metrics.address_count} geocoded entries</p>
         </motion.div>
       </motion.div>
     </motion.div>

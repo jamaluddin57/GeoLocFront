@@ -4,12 +4,12 @@ import { motion } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearAuthData } from '../../features/auth/authSlice'; // Adjust the path based on your project structure
 
-const Header = () => {
+const Header = ({setIsSignOutPopupOpen}) => {
   const dispatch = useDispatch();
   const { permissions } = useSelector((state) => state.auth);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  if (!permissions||permissions.length === 0) {
+  if (!permissions || permissions.length === 0) {
     return null; // Show nothing if permissions are not available
   }
 
@@ -44,11 +44,6 @@ const Header = () => {
     routes = importRoutes;
   }
 
-  // Handle sign-out
-  const handleSignOut = () => {
-    dispatch(clearAuthData());
-  };
-
   return (
     <motion.header
       className="bg-white shadow-md fixed w-full z-10"
@@ -74,7 +69,7 @@ const Header = () => {
             </Link>
           ))}
           <button
-            onClick={handleSignOut}
+            onClick={() => setIsSignOutPopupOpen(true)}
             className="bg-red-500 text-white px-4 py-2 rounded ml-4 hover:bg-red-600 transition duration-300"
           >
             Sign Out
@@ -125,7 +120,7 @@ const Header = () => {
               </Link>
             ))}
             <button
-              onClick={handleSignOut}
+              onClick={() => setIsSignOutPopupOpen(true)}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
             >
               Sign Out
